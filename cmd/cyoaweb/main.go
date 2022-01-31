@@ -29,8 +29,11 @@ func main() {
 		cyoa.WithTemplate(tpl),
 		cyoa.WithPathFunc(pathFn),
 	)
+	mux := http.NewServeMux()
+	mux.Handle("/story", h)
+	mux.Handle("/", cyoa.NewHandler(story))
 	fmt.Printf("starting the server at port: %d\n", *port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), h))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), mux))
 }
 func pathFn(r *http.Request) string {
 	path := strings.TrimSpace(r.URL.Path)
